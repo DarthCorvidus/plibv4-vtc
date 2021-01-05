@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
  */
 class VTCTest extends TestCase {
 	function testAssertValidColor() {
-		$this->assertEquals(NULL, VTC::validateColor(0));
 		for($i=30;$i<=37;$i++) {
 			$this->assertEquals(NULL, VTC::validateColor($i));
 		}

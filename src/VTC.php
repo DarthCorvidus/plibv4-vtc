@@ -23,14 +23,17 @@ class VTC {
 	private $background;
 	private $attributes = array();
 	function setForeground(int $color) {
+		$this->validateColor($color);
 		$this->foreground = $color;
 	}
 	
 	function setBackground(int $color) {
+		$this->validateColor($color);
 		$this->background = $color;
 	}
 	
 	function addAttribute(int $attr) {
+		$this->validateAttribute($attr);
 		if(in_array($attr, $this->attributes)) {
 			return;
 		}
@@ -56,15 +59,12 @@ class VTC {
 		if($this->background!==NULL) {
 			$array[] = $this->background+10;
 		}
-		$array = array_merge($array, $this->attributes);
-	return chr(27)."[". implode(";", $array)."m";
+		$merged = array_merge($array, $this->attributes);
+	return chr(27)."[". implode(";", $merged)."m";
 	}
 	
 	
 	static function validateColor(int $color) {
-		if($color==self::RESET) {
-			return;
-		}
 		if($color>=self::BLACK && $color<=self::WHITE) {
 			return;
 		}
@@ -72,7 +72,7 @@ class VTC {
 	}
 	
 	static function validateAttribute($attribute) {
-		if($attribute==self::RESET or $attribute==self::HIDDEN) {
+		if($attribute==self::HIDDEN) {
 			return;
 		}
 		if($attribute>=self::BRIGHT && $attribute<=self::BLINK) {
