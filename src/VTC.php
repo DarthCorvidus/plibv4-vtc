@@ -84,6 +84,7 @@ class VTC {
 		$merged = array_merge($array, $this->attributes);
 	return chr(27)."[". implode(";", $merged)."m";
 	}
+	
 	/**
 	 * Validates color
 	 * 
