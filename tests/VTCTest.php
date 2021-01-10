@@ -119,7 +119,7 @@ class VTCTest extends TestCase {
 		$vtc->addAttribute(VTC::UNDERSCORE);
 		$this->assertEquals($this->hex(chr(27)."[".VTC::RED.";".VTC::DIM.";".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
 		$vtc->reset();
-		$this->assertEquals($this->hex(chr(27)."[m"), $this->hex($vtc->getAC()));
+		$this->assertEquals($this->hex(""), $this->hex($vtc->getAC()));
 	}
 
 	function testGetReset() {
@@ -133,6 +133,34 @@ class VTCTest extends TestCase {
 		$vtc->addAttribute(VTC::DIM);
 		$vtc->addAttribute(VTC::UNDERSCORE);
 		$this->assertEquals($this->hex(chr(27)."[".VTC::RED.";".(VTC::BLUE+10).";".VTC::DIM.";".VTC::UNDERSCORE."mString".chr(27)."[0m"), $this->hex($vtc->getACString("String")));
+	}
+	
+	function testNeutral() {
+		$vtc = new VTC();
+		$this->assertEquals(TRUE, $vtc->isNeutral());
+	}
+
+	function testNotNeutral() {
+		$vtc = new VTC();
+		$vtc->setForeground(VTC::RED);
+		$this->assertEquals(FALSE, $vtc->isNeutral());
+		$vtc = new VTC();
+		$vtc->setBackground(VTC::RED);
+		$this->assertEquals(FALSE, $vtc->isNeutral());
+		$vtc = new VTC();
+		$vtc->addAttribute(VTC::DIM);
+		$this->assertEquals(FALSE, $vtc->isNeutral());
+
+	}
+
+	function testGetNeutralAC() {
+		$vtc = new VTC();
+		$this->assertEquals("", $this->hex($vtc->getAC()));
+	}
+	
+	function testNeutralString() {
+		$vtc = new VTC();
+		$this->assertEquals("String", $this->hex($vtc->getACString("String")));
 	}
 
 }

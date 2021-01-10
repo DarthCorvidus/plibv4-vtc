@@ -23,10 +23,34 @@ class VTC {
 	private $background;
 	private $attributes = array();
 	/**
+	 * Test if instance is 'neutral'
+	 * 
+	 * An instance of VTC is considered 'neutral' if no color or attribute is
+	 * set.
+	 * @return bool
+	 */
+	function isNeutral(): bool {
+		if($this->foreground!==NULL) {
+			return FALSE;
+		}
+		if($this->background!==NULL) {
+			return FALSE;
+		}
+		if(!empty($this->attributes)) {
+			return FALSE;
+		}
+	return TRUE;
+	}
+
+	/**
 	 * Set foreground color (use class constant)
 	 * @param int $color
 	 */
 	function setForeground(int $color) {
+		if($color===0) {
+			$this->foreground = NULL;
+			return;
+		}
 		$this->validateColor($color);
 		$this->foreground = $color;
 	}
@@ -36,6 +60,10 @@ class VTC {
 	 * @param int $color
 	 */
 	function setBackground(int $color) {
+		if($color===0) {
+			$this->background = NULL;
+			return;
+		}
 		$this->validateColor($color);
 		$this->background = $color;
 	}
@@ -51,7 +79,19 @@ class VTC {
 		}
 		$this->attributes[] = $attr;
 	}
-
+	/**
+	 * Set attributes
+	 * 
+	 * Attributes are replaced by the contents of $attr.
+	 * @param array $attr
+	 */
+	function setAttributes(array $attr) {
+		$this->attributes = array();
+		foreach($attr as $value) {
+			$this->addAttribute($value);
+		}
+	}
+	
 	/**
 	 * Remove attribute
 	 * @param int $attr
@@ -74,6 +114,9 @@ class VTC {
 	 * @return type
 	 */
 	function getAC() {
+		if($this->isNeutral()) {
+			return "";
+		}
 		$array = array();
 		if($this->foreground!==NULL) {
 			$array[] = $this->foreground;
@@ -189,10 +232,15 @@ class VTC {
 	 * your string, returning the terminal to its defaults afterwards, allowing
 	 * you to echo normal text afterwards. Also, your users won't end up with a
 	 * wildly colored terminal should your program end prematurely.
+	 * Note that if the instance of VTC is 'neutral', no control sequences will
+	 * be added and the input string will be returned unchanged.
 	 * @param string $string
 	 * @return type
 	 */
-	function getACString(string $string) {
+	function getACString(string $string): string {
+		if($this->isNeutral()) {
+			return $string;
+		}
 		return $this->getAC().$string.$this->getReset();
 	}
 	
