@@ -19,9 +19,10 @@ class VTC {
 	const MAGENTA = 35;
 	const CYAN = 36;
 	const WHITE = 37;
-	private $foreground;
-	private $background;
-	private $attributes = array();
+	private ?int $foreground = null;
+	private ?int $background = null;
+	/** @var list<int> */
+	private array $attributes = array();
 	/**
 	 * Test if instance is 'neutral'
 	 * 
@@ -46,7 +47,7 @@ class VTC {
 	 * Set foreground color (use class constant)
 	 * @param int $color
 	 */
-	function setForeground(int $color) {
+	function setForeground(int $color): void {
 		if($color===0) {
 			$this->foreground = NULL;
 			return;
@@ -59,7 +60,7 @@ class VTC {
 	 * Set background color (use class constant)
 	 * @param int $color
 	 */
-	function setBackground(int $color) {
+	function setBackground(int $color): void {
 		if($color===0) {
 			$this->background = NULL;
 			return;
@@ -72,7 +73,7 @@ class VTC {
 	 * Add attribute
 	 * @param int $attr
 	 */
-	function addAttribute(int $attr) {
+	function addAttribute(int $attr): void {
 		$this->validateAttribute($attr);
 		if(in_array($attr, $this->attributes)) {
 			return;
@@ -83,9 +84,9 @@ class VTC {
 	 * Set attributes
 	 * 
 	 * Attributes are replaced by the contents of $attr.
-	 * @param array $attr
+	 * @param list<int> $attr
 	 */
-	function setAttributes(array $attr) {
+	function setAttributes(array $attr): void {
 		$this->attributes = array();
 		foreach($attr as $value) {
 			$this->addAttribute($value);
@@ -96,10 +97,10 @@ class VTC {
 	 * Remove attribute
 	 * @param int $attr
 	 */
-	function removeAttribute(int $attr) {
+	function removeAttribute(int $attr): void {
 		$new = array();
 		foreach ($this->attributes as $value) {
-			if($value==$attr) {
+			if($value===$attr) {
 				continue;
 			}
 			$new[] = $value;
@@ -111,9 +112,9 @@ class VTC {
 	 * Get command for attributes and colors
 	 * 
 	 * Get command to set the terminal color(s) and attribute(s)
-	 * @return type
+	 * @return string
 	 */
-	function getAC() {
+	function getAC(): string {
 		if($this->isNeutral()) {
 			return "";
 		}
@@ -125,6 +126,7 @@ class VTC {
 			$array[] = $this->background+10;
 		}
 		$merged = array_merge($array, $this->attributes);
+		/** @psalm-suppress MixedArgumentTypeCoercion */
 	return chr(27)."[". implode(";", $merged)."m";
 	}
 	
@@ -134,10 +136,10 @@ class VTC {
 	 * Validates if value is a valid color class constant. If not, an exception
 	 * is thrown.
 	 * @param int $color
-	 * @return type
+	 * @return void
 	 * @throws UnexpectedValueException
 	 */
-	static function validateColor(int $color) {
+	static function validateColor(int $color): void {
 		if($color>=self::BLACK && $color<=self::WHITE) {
 			return;
 		}
@@ -149,11 +151,11 @@ class VTC {
 	 * 
 	 * Validates if value is a valid attribute class constant. If not, an
 	 * exception is thrown.
-	 * @param type $attribute
-	 * @return type
+	 * @param int $attribute
+	 * @return void
 	 * @throws UnexpectedValueException
 	 */
-	static function validateAttribute(int $attribute) {
+	static function validateAttribute(int $attribute): void {
 		if($attribute==self::HIDDEN) {
 			return;
 		}
@@ -169,7 +171,7 @@ class VTC {
 	 * Resets foreground color to the default value.
 	 * Note that this only resets the internal class value, not the terminal.
 	 */
-	function resetForeground() {
+	function resetForeground(): void {
 		$this->foreground = NULL;
 	}
 	
@@ -179,7 +181,7 @@ class VTC {
 	 * Resets background color to the default value.
 	 * Note that this only resets the internal class value, not the terminal.
 	 */
-	function resetBackground() {
+	function resetBackground(): void {
 		$this->background = NULL;
 	}
 	
@@ -189,7 +191,7 @@ class VTC {
 	 * Resets attributes to default value.
 	 * Note that this only resets the internal class value, not the terminal.
 	 */
-	function resetAttributes() {
+	function resetAttributes(): void {
 		$this->attributes = array();
 	}
 	
@@ -199,7 +201,7 @@ class VTC {
 	 * Resets colors to default value.
 	 * Note that this only resets the internal class value, not the terminal.
 	 */
-	function resetColor() {
+	function resetColor(): void {
 		$this->resetForeground();
 		$this->resetBackground();
 	}
@@ -210,16 +212,16 @@ class VTC {
 	 * Resets everything to default value.
 	 * Note that this only resets the internal class value, not the terminal.
 	 */
-	function reset() {
+	function reset(): void {
 		$this->resetColor();
 		$this->resetAttributes();
 	}
 	
 	/**
 	 * Get reset command without changing the internal class value.
-	 * @return type
+	 * @return string
 	 */
-	static function getReset() {
+	static function getReset(): string {
 		return chr(27)."[".self::RESET."m";
 	}
 	
@@ -235,7 +237,7 @@ class VTC {
 	 * Note that if the instance of VTC is 'neutral', no control sequences will
 	 * be added and the input string will be returned unchanged.
 	 * @param string $string
-	 * @return type
+	 * @return string
 	 */
 	function getACString(string $string): string {
 		if($this->isNeutral()) {
