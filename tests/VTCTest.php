@@ -7,12 +7,6 @@ use PHPUnit\Framework\TestCase;
  * @license LGPLv2.1
  */
 class VTCTest extends TestCase {
-	function testAssertValidColor() {
-		for($i=30;$i<=37;$i++) {
-			$this->assertEquals(NULL, VTC::validateColor($i));
-		}
-	}
-	
 	static function hex($string) {
 		$new = "";
 		for($i=0;$i<strlen($string);$i++) {
@@ -25,56 +19,51 @@ class VTCTest extends TestCase {
 	return $new;
 	}
 	
-	function testAssertInvalidColor() {
-		$this->expectException(UnexpectedValueException::class);
-		VTC::validateColor(17);
-	}
-	
 	function testForeground() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
+		$vtc->setForeground(VTCColor::RED);
 		$this->assertEquals($this->hex(chr(27)."[31m"), $this->hex($vtc->getAC()));
 	}
 	
 	function testBackground() {
 		$vtc = new VTC();
-		$vtc->setBackground(VTC::RED);
+		$vtc->setBackground(VTCColor::RED);
 		$this->assertEquals($this->hex(chr(27)."[41m"), $this->hex($vtc->getAC()));
 	}
 	
 	function testForegroundAndBackground() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
-		$vtc->setBackground(VTC::RED);
+		$vtc->setForeground(VTCColor::RED);
+		$vtc->setBackground(VTCColor::RED);
 		$this->assertEquals($this->hex(chr(27)."[31;41m"), $this->hex($vtc->getAC()));
 	}
 	
 	function testAttributeDim() {
 		$vtc = new VTC();
-		$vtc->addAttribute(VTC::DIM);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::DIM."m"), $this->hex($vtc->getAC()));
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$this->assertEquals($this->hex(chr(27)."[". VTCAttribute::DIM->value."m"), $this->hex($vtc->getAC()));
 	}
 
 	function testAttributeDimAndUnderscore() {
 		$vtc = new VTC();
-		$vtc->addAttribute(VTC::DIM);
-		$vtc->addAttribute(VTC::UNDERSCORE);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::DIM.";".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$vtc->addAttribute(VTCAttribute::UNDERSCORE);
+		$this->assertEquals($this->hex(chr(27)."[". VTCAttribute::DIM->value.";". VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
 	}
 
 	function testRemoveAttributeDim() {
 		$vtc = new VTC();
-		$vtc->addAttribute(VTC::DIM);
-		$vtc->addAttribute(VTC::UNDERSCORE);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::DIM.";".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
-		$vtc->removeAttribute(VTC::DIM);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$vtc->addAttribute(VTCAttribute::UNDERSCORE);
+		$this->assertEquals($this->hex(chr(27)."[". VTCAttribute::DIM->value.";". VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
+		$vtc->removeAttribute(VTCAttribute::DIM);
+		$this->assertEquals($this->hex(chr(27)."[". VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
 	}
 	
 	function testResetForeground() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
-		$vtc->setBackground(VTC::RED);
+		$vtc->setForeground(VTCColor::RED);
+		$vtc->setBackground(VTCColor::RED);
 		$this->assertEquals($this->hex(chr(27)."[31;41m"), $this->hex($vtc->getAC()));
 		$vtc->resetForeground();
 		$this->assertEquals($this->hex(chr(27)."[41m"), $this->hex($vtc->getAC()));
@@ -83,8 +72,8 @@ class VTCTest extends TestCase {
 	
 	function testResetBackground() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
-		$vtc->setBackground(VTC::RED);
+		$vtc->setForeground(VTCColor::RED);
+		$vtc->setBackground(VTCColor::RED);
 		$this->assertEquals($this->hex(chr(27)."[31;41m"), $this->hex($vtc->getAC()));
 		$vtc->resetBackground();
 		$this->assertEquals($this->hex(chr(27)."[31m"), $this->hex($vtc->getAC()));
@@ -92,32 +81,32 @@ class VTCTest extends TestCase {
 	
 	function testResetAttributes() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
-		$vtc->addAttribute(VTC::DIM);
-		$vtc->addAttribute(VTC::UNDERSCORE);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::RED.";".VTC::DIM.";".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
+		$vtc->setForeground(VTCColor::RED);
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$vtc->addAttribute(VTCAttribute::UNDERSCORE);
+		$this->assertEquals($this->hex(chr(27)."[".VTCColor::RED->value.";". VTCAttribute::DIM->value.";".VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
 		$vtc->resetAttributes();
-		$this->assertEquals($this->hex(chr(27)."[".VTC::RED."m"), $this->hex($vtc->getAC()));
+		$this->assertEquals($this->hex(chr(27)."[".VTCColor::RED->value."m"), $this->hex($vtc->getAC()));
 	}
 	
 	function testResetColor() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
-		$vtc->setBackground(VTC::BLUE);
-		$vtc->addAttribute(VTC::DIM);
-		$vtc->addAttribute(VTC::UNDERSCORE);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::RED.";".(VTC::BLUE+10).";".VTC::DIM.";".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
+		$vtc->setForeground(VTCColor::RED);
+		$vtc->setBackground(VTCColor::BLUE);
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$vtc->addAttribute(VTCAttribute::UNDERSCORE);
+		$this->assertEquals($this->hex(chr(27)."[".VTCColor::RED->value.";".(VTCColor::BLUE->value+10).";". VTCAttribute::DIM->value.";". VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
 		$vtc->resetColor();
-		$this->assertEquals($this->hex(chr(27)."[".VTC::DIM.";".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
+		$this->assertEquals($this->hex(chr(27)."[".VTCAttribute::DIM->value.";".VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
 	}
 
 	
 	function testResetAll() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
-		$vtc->addAttribute(VTC::DIM);
-		$vtc->addAttribute(VTC::UNDERSCORE);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::RED.";".VTC::DIM.";".VTC::UNDERSCORE."m"), $this->hex($vtc->getAC()));
+		$vtc->setForeground(VTCColor::RED);
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$vtc->addAttribute(VTCAttribute::UNDERSCORE);
+		$this->assertEquals($this->hex(chr(27)."[".VTCColor::RED->value.";".VTCAttribute::DIM->value.";".VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
 		$vtc->reset();
 		$this->assertEquals($this->hex(""), $this->hex($vtc->getAC()));
 	}
@@ -128,11 +117,11 @@ class VTCTest extends TestCase {
 	
 	function testGetStringRedForegroundBlueBackgroundDimmedUnderscore() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
-		$vtc->setBackground(VTC::BLUE);
-		$vtc->addAttribute(VTC::DIM);
-		$vtc->addAttribute(VTC::UNDERSCORE);
-		$this->assertEquals($this->hex(chr(27)."[".VTC::RED.";".(VTC::BLUE+10).";".VTC::DIM.";".VTC::UNDERSCORE."mString".chr(27)."[0m"), $this->hex($vtc->getACString("String")));
+		$vtc->setForeground(VTCColor::RED);
+		$vtc->setBackground(VTCColor::BLUE);
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$vtc->addAttribute(VTCAttribute::UNDERSCORE);
+		$this->assertEquals($this->hex(chr(27)."[".VTCColor::RED->value.";".(VTCColor::BLUE->value+10).";". VTCAttribute::DIM->value.";". VTCAttribute::UNDERSCORE->value."mString".chr(27)."[0m"), $this->hex($vtc->getACString("String")));
 	}
 	
 	function testNeutral() {
@@ -142,15 +131,14 @@ class VTCTest extends TestCase {
 
 	function testNotNeutral() {
 		$vtc = new VTC();
-		$vtc->setForeground(VTC::RED);
+		$vtc->setForeground(VTCColor::RED);
 		$this->assertEquals(FALSE, $vtc->isNeutral());
 		$vtc = new VTC();
-		$vtc->setBackground(VTC::RED);
+		$vtc->setBackground(VTCColor::RED);
 		$this->assertEquals(FALSE, $vtc->isNeutral());
 		$vtc = new VTC();
-		$vtc->addAttribute(VTC::DIM);
+		$vtc->addAttribute(VTCAttribute::DIM);
 		$this->assertEquals(FALSE, $vtc->isNeutral());
-
 	}
 
 	function testGetNeutralAC() {
@@ -162,5 +150,4 @@ class VTCTest extends TestCase {
 		$vtc = new VTC();
 		$this->assertEquals("String", $this->hex($vtc->getACString("String")));
 	}
-
 }

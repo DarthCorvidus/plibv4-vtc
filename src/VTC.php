@@ -5,20 +5,6 @@
  * @license LGPLv2.1
  */
 class VTC {
-	const RESET = 0;
-	const BRIGHT = 1;
-	const DIM = 2;
-	const UNDERSCORE = 4;
-	const BLINK = 5;
-	const HIDDEN = 8;
-	const BLACK = 30;
-	const RED = 31;
-	const GREEN = 32;
-	const YELLOW = 33;
-	const BLUE = 34;
-	const MAGENTA = 35;
-	const CYAN = 36;
-	const WHITE = 37;
 	private ?int $foreground = null;
 	private ?int $background = null;
 	/** @var list<int> */
@@ -45,46 +31,43 @@ class VTC {
 
 	/**
 	 * Set foreground color (use class constant)
-	 * @param int $color
+	 * @param VTCColor $color
 	 */
-	function setForeground(int $color): void {
-		if($color===0) {
+	function setForeground(VTCColor $color): void {
+		if($color===VTCColor::RESET) {
 			$this->foreground = NULL;
 			return;
 		}
-		$this->validateColor($color);
-		$this->foreground = $color;
+		$this->foreground = $color->value;
 	}
 	
 	/**
 	 * Set background color (use class constant)
-	 * @param int $color
+	 * @param VTCColor $color
 	 */
-	function setBackground(int $color): void {
-		if($color===0) {
+	function setBackground(VTCColor $color): void {
+		if($color===VTCColor::RESET) {
 			$this->background = NULL;
 			return;
 		}
-		$this->validateColor($color);
-		$this->background = $color;
+		$this->background = $color->value;
 	}
 	
 	/**
 	 * Add attribute
-	 * @param int $attr
+	 * @param VTCAttribute $attr
 	 */
-	function addAttribute(int $attr): void {
-		$this->validateAttribute($attr);
-		if(in_array($attr, $this->attributes)) {
+	function addAttribute(VTCAttribute $attr): void {
+		if(in_array($attr->value, $this->attributes, true)) {
 			return;
 		}
-		$this->attributes[] = $attr;
+		$this->attributes[] = $attr->value;
 	}
 	/**
 	 * Set attributes
 	 * 
 	 * Attributes are replaced by the contents of $attr.
-	 * @param list<int> $attr
+	 * @param list<VTCAttribute> $attr
 	 */
 	function setAttributes(array $attr): void {
 		$this->attributes = array();
@@ -95,12 +78,12 @@ class VTC {
 	
 	/**
 	 * Remove attribute
-	 * @param int $attr
+	 * @param VTCAttribute $attr
 	 */
-	function removeAttribute(int $attr): void {
+	function removeAttribute(VTCAttribute $attr): void {
 		$new = array();
 		foreach ($this->attributes as $value) {
-			if($value===$attr) {
+			if($value===$attr->value) {
 				continue;
 			}
 			$new[] = $value;
@@ -130,41 +113,6 @@ class VTC {
 	return chr(27)."[". implode(";", $merged)."m";
 	}
 	
-	/**
-	 * Validates color
-	 * 
-	 * Validates if value is a valid color class constant. If not, an exception
-	 * is thrown.
-	 * @param int $color
-	 * @return void
-	 * @throws UnexpectedValueException
-	 */
-	static function validateColor(int $color): void {
-		if($color>=self::BLACK && $color<=self::WHITE) {
-			return;
-		}
-	throw new UnexpectedValueException($color." is not a valid color.");
-	}
-	
-	/**
-	 * Validates attribute
-	 * 
-	 * Validates if value is a valid attribute class constant. If not, an
-	 * exception is thrown.
-	 * @param int $attribute
-	 * @return void
-	 * @throws UnexpectedValueException
-	 */
-	static function validateAttribute(int $attribute): void {
-		if($attribute==self::HIDDEN) {
-			return;
-		}
-		if($attribute>=self::BRIGHT && $attribute<=self::BLINK) {
-			return;
-		}
-	throw new UnexpectedValueException($attribute." is not a valid attribute.");
-	}
-
 	/**
 	 * Reset foreground color
 	 * 
@@ -222,7 +170,7 @@ class VTC {
 	 * @return string
 	 */
 	static function getReset(): string {
-		return chr(27)."[".self::RESET."m";
+		return chr(27)."[".VTCAttribute::RESET->value."m";
 	}
 	
 	/**
