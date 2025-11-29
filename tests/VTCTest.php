@@ -60,6 +60,16 @@ class VTCTest extends TestCase {
 		$this->assertEquals($this->hex(chr(27)."[". VTCAttribute::UNDERSCORE->value."m"), $this->hex($vtc->getAC()));
 	}
 	
+	function testDuplicateAttributeNotAdded() {
+		$vtc = new VTC();
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$vtc->addAttribute(VTCAttribute::DIM);
+		$this->assertEquals(
+			$this->hex(chr(27)."[".VTCAttribute::DIM->value."m"),
+			$this->hex($vtc->getAC())
+		);
+	}
+
 	function testResetForeground() {
 		$vtc = new VTC();
 		$vtc->setForeground(VTCColor::RED);
