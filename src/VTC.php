@@ -81,14 +81,9 @@ class VTC {
 	 * @param VTCAttribute $attr
 	 */
 	function removeAttribute(VTCAttribute $attr): void {
-		$new = array();
-		foreach ($this->attributes as $value) {
-			if($value===$attr->value) {
-				continue;
-			}
-			$new[] = $value;
-		}
-		$this->attributes = $new;
+		$this->attributes = array_values(
+			array_diff($this->attributes, [$attr->value])
+		);
 	}
 	
 	/**
