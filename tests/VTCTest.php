@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+namespace plibv4\vtc;
 use PHPUnit\Framework\TestCase;
 /**
  * @copyright (c) 2021, Claus-Christoph Küthe

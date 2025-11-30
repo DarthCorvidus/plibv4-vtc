@@ -4,6 +4,7 @@
  * @author Claus-Christoph Küthe <plibv4@vm01.telton.de>
  * @license LGPLv2.1
  */
+namespace plibv4\vtc;
 class VTC {
 	private ?int $foreground = null;
 	private ?int $background = null;
