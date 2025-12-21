@@ -1,7 +1,7 @@
 <?php
 namespace plibv4\vtc;
 enum VTCColor: int {
-	case RESET = 0;
+	case NONE = 0;
 	case BLACK = 30;
 	case RED = 31;
 	case GREEN = 32;

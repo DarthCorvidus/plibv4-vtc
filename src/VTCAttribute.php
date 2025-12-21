@@ -6,7 +6,7 @@
  */
 namespace plibv4\vtc;
 enum VTCAttribute: int {
-	case RESET = 0;
+	case NONE = 0;
 	case BRIGHT = 1;
 	case DIM = 2;
 	case UNDERSCORE = 4;

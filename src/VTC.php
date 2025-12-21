@@ -35,7 +35,7 @@ final class VTC {
 	 * @param VTCColor $color
 	 */
 	function setForeground(VTCColor $color): void {
-		if($color===VTCColor::RESET) {
+		if($color===VTCColor::NONE) {
 			$this->foreground = NULL;
 			return;
 		}
@@ -47,7 +47,7 @@ final class VTC {
 	 * @param VTCColor $color
 	 */
 	function setBackground(VTCColor $color): void {
-		if($color===VTCColor::RESET) {
+		if($color===VTCColor::NONE) {
 			$this->background = NULL;
 			return;
 		}
@@ -166,7 +166,7 @@ final class VTC {
 	 * @return string
 	 */
 	static function getReset(): string {
-		return chr(27)."[".VTCAttribute::RESET->value."m";
+		return chr(27)."[".VTCAttribute::NONE->value."m";
 	}
 	
 	/**
