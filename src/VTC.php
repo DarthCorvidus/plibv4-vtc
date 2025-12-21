@@ -5,7 +5,7 @@
  * @license LGPLv2.1
  */
 namespace plibv4\vtc;
-class VTC {
+final class VTC {
 	private ?int $foreground = null;
 	private ?int $background = null;
 	/** @var list<int> */
