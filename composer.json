@@ -1,5 +1,6 @@
 {
 	"name": "plibv4/vtc",
+	"prefer-stable": true,
 	"autoload": {
         "classmap": ["src/"]
     },
