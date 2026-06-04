@@ -5,6 +5,21 @@
  * @license LGPLv2.1
  */
 namespace plibv4\vtc;
+/**
+ * VT100/ANSI Terminal Color and Attribute Manager
+ * 
+ * Provides a fluent interface for setting terminal colors and text attributes
+ * using ANSI escape sequences. Supports foreground/background colors and
+ * various text attributes (bold, dim, underscore, blink, hidden).
+ * 
+ * @example
+ * $vtc = new VTC();
+ * $vtc->setForeground(VTCColor::RED);
+ * $vtc->addAttribute(VTCAttribute::BRIGHT);
+ * echo $vtc->getACString("Hello World");
+ * 
+ * @package plibv4\vtc
+ */
 final class VTC {
 	const BACKGROUND_OFFSET = 10;
 	private ?int $foreground = null;
@@ -107,7 +122,6 @@ final class VTC {
 			$array[] = $this->background+self::BACKGROUND_OFFSET;
 		}
 		$merged = array_merge($array, $this->attributes);
-		/** @psalm-suppress MixedArgumentTypeCoercion */
 	return chr(27)."[". implode(";", $merged)."m";
 	}
 	
