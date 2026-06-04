@@ -6,6 +6,7 @@
  */
 namespace plibv4\vtc;
 final class VTC {
+	const BACKGROUND_OFFSET = 10;
 	private ?int $foreground = null;
 	private ?int $background = null;
 	/** @var list<int> */
@@ -102,7 +103,8 @@ final class VTC {
 			$array[] = $this->foreground;
 		}
 		if($this->background!==NULL) {
-			$array[] = $this->background+10;
+			// Background colors are foreground colors + 10.
+			$array[] = $this->background+self::BACKGROUND_OFFSET;
 		}
 		$merged = array_merge($array, $this->attributes);
 		/** @psalm-suppress MixedArgumentTypeCoercion */
