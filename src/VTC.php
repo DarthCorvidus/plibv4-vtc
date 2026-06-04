@@ -19,16 +19,16 @@ final class VTC {
 	 * @return bool
 	 */
 	function isNeutral(): bool {
-		if($this->foreground!==NULL) {
-			return FALSE;
+		if($this->foreground!==null) {
+			return false;
 		}
-		if($this->background!==NULL) {
-			return FALSE;
+		if($this->background!==null) {
+			return false;
 		}
 		if(!empty($this->attributes)) {
-			return FALSE;
+			return false;
 		}
-	return TRUE;
+	return true;
 	}
 
 	/**
@@ -37,7 +37,7 @@ final class VTC {
 	 */
 	function setForeground(VTCColor $color): void {
 		if($color===VTCColor::NONE) {
-			$this->foreground = NULL;
+			$this->foreground = null;
 			return;
 		}
 		$this->foreground = $color->value;
@@ -49,7 +49,7 @@ final class VTC {
 	 */
 	function setBackground(VTCColor $color): void {
 		if($color===VTCColor::NONE) {
-			$this->background = NULL;
+			$this->background = null;
 			return;
 		}
 		$this->background = $color->value;
@@ -99,10 +99,10 @@ final class VTC {
 			return "";
 		}
 		$array = array();
-		if($this->foreground!==NULL) {
+		if($this->foreground!==null) {
 			$array[] = $this->foreground;
 		}
-		if($this->background!==NULL) {
+		if($this->background!==null) {
 			// Background colors are foreground colors + 10.
 			$array[] = $this->background+self::BACKGROUND_OFFSET;
 		}
@@ -118,7 +118,7 @@ final class VTC {
 	 * Note that this only resets the internal class value, not the terminal.
 	 */
 	function resetForeground(): void {
-		$this->foreground = NULL;
+		$this->foreground = null;
 	}
 	
 	/**
@@ -128,7 +128,7 @@ final class VTC {
 	 * Note that this only resets the internal class value, not the terminal.
 	 */
 	function resetBackground(): void {
-		$this->background = NULL;
+		$this->background = null;
 	}
 	
 	/**

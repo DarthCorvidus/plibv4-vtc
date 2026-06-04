@@ -160,19 +160,19 @@ final class VTCTest extends TestCase {
 	
 	function testNeutral(): void {
 		$vtc = new VTC();
-		$this->assertEquals(TRUE, $vtc->isNeutral());
+		$this->assertEquals(true, $vtc->isNeutral());
 	}
 
 	function testNotNeutral(): void {
 		$vtc = new VTC();
 		$vtc->setForeground(VTCColor::RED);
-		$this->assertEquals(FALSE, $vtc->isNeutral());
+		$this->assertEquals(false, $vtc->isNeutral());
 		$vtc = new VTC();
 		$vtc->setBackground(VTCColor::RED);
-		$this->assertEquals(FALSE, $vtc->isNeutral());
+		$this->assertEquals(false, $vtc->isNeutral());
 		$vtc = new VTC();
 		$vtc->addAttribute(VTCAttribute::DIM);
-		$this->assertEquals(FALSE, $vtc->isNeutral());
+		$this->assertEquals(false, $vtc->isNeutral());
 	}
 
 	function testGetNeutralAC(): void {
