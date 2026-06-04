@@ -69,7 +69,6 @@ final class VTC {
 	 * 
 	 * Attributes are replaced by the contents of $attr.
 	 * @param list<VTCAttribute> $attr
-	 * @psalm-suppress PossiblyUnusedMethod
 	 */
 	function setAttributes(array $attr): void {
 		$this->attributes = array();

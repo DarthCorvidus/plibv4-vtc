@@ -20,16 +20,33 @@ final class VTCTest extends TestCase {
 	return $new;
 	}
 	
-	function testForeground(): void {
+	function testSetForeground(): void {
 		$vtc = new VTC();
 		$vtc->setForeground(VTCColor::RED);
 		$this->assertEquals($this->hex(chr(27)."[31m"), $this->hex($vtc->getAC()));
+	}
+
+	function testSetForegroundNone(): void {
+		$vtc = new VTC();
+		$vtc->setForeground(VTCColor::RED);
+		$this->assertEquals($this->hex(chr(27)."[31m"), $this->hex($vtc->getAC()));
+		$vtc->setForeground(VTCColor::NONE);
+		$this->assertEquals("", $this->hex($vtc->getAC()));
 	}
 	
 	function testBackground(): void {
 		$vtc = new VTC();
 		$vtc->setBackground(VTCColor::RED);
 		$this->assertEquals($this->hex(chr(27)."[41m"), $this->hex($vtc->getAC()));
+	}
+
+	function testBackgroundNone(): void {
+		$vtc = new VTC();
+		$vtc->setBackground(VTCColor::RED);
+		$this->assertEquals($this->hex(chr(27)."[41m"), $this->hex($vtc->getAC()));
+		$vtc->setBackground(VTCColor::NONE);
+		$this->assertEquals("", $this->hex($vtc->getAC()));
+
 	}
 	
 	function testForegroundAndBackground(): void {
@@ -43,6 +60,12 @@ final class VTCTest extends TestCase {
 		$vtc = new VTC();
 		$vtc->addAttribute(VTCAttribute::DIM);
 		$this->assertEquals($this->hex(chr(27)."[". VTCAttribute::DIM->value."m"), $this->hex($vtc->getAC()));
+	}
+
+	function testSetAttributes(): void {
+		$vtc = new VTC();
+		$vtc->setAttributes([VTCAttribute::DIM, VTCAttribute::BLINK]);
+		$this->assertEquals($this->hex(chr(27)."[". VTCAttribute::DIM->value.";".VTCAttribute::BLINK->value."m"), $this->hex($vtc->getAC()));
 	}
 
 	function testAttributeDimAndUnderscore(): void {
